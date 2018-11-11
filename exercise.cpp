@@ -2,22 +2,26 @@
 #include <algorithm>
 #include <QJsonArray>
 
-Exercise::Exercise(const std::initializer_list<SetStorage> &list):
-    m_setlist{list.size()}
+Exercise::Exercise(const std::initializer_list<SetStorage> &list)
 {
-    std::for_each(list.begin(), list.end(),
-                  [this] (const SetStorage &s) {
-                      this->m_setlist.push_back(s);
-                  });
+    std::copy(list.begin(), list.end(), std::back_inserter(m_setlist));
 }
 
-void Exercise::insert_set(const SetStorage &new_set, unsigned int dest_pos)
+void Exercise::insert_set(const SetStorage &new_set, std::size_t dest_pos)
 {
-    m_setlist.insert(m_setlist.begin() + dest_pos,
-                     new_set);
+    if (m_setlist.empty()) {
+        m_setlist.push_back(new_set);
+        return;
+    }
+
+    auto it_before = m_setlist.begin() + (dest_pos - 1);
+    if ((it_before > m_setlist.end()) || (it_before < m_setlist.begin()))
+        throw 'a';
+
+    m_setlist.insert(it_before, new_set);
 }
 
-void Exercise::delete_set(unsigned int dest_set)
+void Exercise::delete_set(std::size_t dest_set)
 {
     if (dest_set > size())
         return;
@@ -31,11 +35,9 @@ bool Exercise::readJson(const QJsonObject &obj)
         return false;
 
     QJsonArray set_arr{obj.value("sets_list")};
-    for (const auto json_obj: set_arr) {
-        if (!json_obj.isObject())
-            continue;
+    for (auto it = set_arr.begin(); it != set_arr.end(); ++it) {
         SetStorage set;
-        set.readJson(std::move(json_obj.toObject()));
+        set.readJson(it->toObject());
         m_setlist.emplace_back(std::move(set));
     }
     return true;

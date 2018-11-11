@@ -35,22 +35,25 @@ public:
         warmup_bit, reps, weight, time, distance, MEMBERS_END
     };
 
-    typedef unsigned int FieldType;
+    typedef long int FieldType;
 
     SetStorage() = default;
     SetStorage(const std::initializer_list<std::pair<Member, FieldType>> &);
     virtual ~SetStorage() = default;
 
-    void set_field(Member which, FieldType value) {
+    void set_field(Member which, FieldType value)
+    {
         m_data[which] = value;
     }
 
-    bool get_field(Member which, FieldType &populate_value) const {
-        if (m_data.count(which) == 0)
-            return false;
+    FieldType get_field(Member which) const
+    {
+        return m_data.at(which);
+    }
 
-        populate_value = m_data.at(which);
-        return true;
+    bool has_field(Member which) const
+    {
+        return (m_data.count(which) > 0);
     }
 
     virtual bool readJson(const QJsonObject &read_from);

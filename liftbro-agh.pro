@@ -1,5 +1,5 @@
 QT += quick
-CONFIG += c++11
+CONFIG += c++14
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which as been marked deprecated (the exact warnings
@@ -16,7 +16,8 @@ SOURCES += \
         main.cpp \
     setstorage.cpp \
     exercise.cpp \
-    workout.cpp
+    workout.cpp \
+    exercisespawner.cpp
 
 RESOURCES += qml.qrc
 
@@ -35,4 +36,6 @@ HEADERS += \
     jsonable.h \
     setstorage.h \
     exercise.h \
-    workout.h
+    workout.h \
+    exercisespawner.h \
+    spawnerfields.h
