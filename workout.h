@@ -5,17 +5,18 @@
 #include "exercise.h"
 
 #include <vector>
-#include <chrono>
 #include <initializer_list>
+#include <QDateTime>
 
-typedef std::chrono::time_point<std::chrono::system_clock> Timestamp;
+// Chrono sucks
+typedef QDateTime Timestamp;
 
 // TODO: lazy loading
 
 class Workout : public Jsonable
 {
 public:
-    explicit Workout(Timestamp now = std::chrono::system_clock::now()):
+    explicit Workout(Timestamp now = QDateTime::currentDateTime()):
         m_exerlist{},
         m_finish_timestamp{now}
        // m_loaded{false}
@@ -25,7 +26,7 @@ public:
     virtual ~Workout() noexcept = default;
 
     Workout(const std::initializer_list<Exercise> &,
-            Timestamp now = std::chrono::system_clock::now());
+            Timestamp now = QDateTime::currentDateTime());
 
     virtual bool readJson(const QJsonObject &);
     virtual void writeJson(QJsonObject &) const;
@@ -35,7 +36,7 @@ public:
         return m_finish_timestamp;
     }
 
-    void mark_complete(Timestamp when = std::chrono::system_clock::now())
+    void mark_complete(Timestamp when = QDateTime::currentDateTime())
     {
         m_finish_timestamp = when;
        // m_loaded = true;
