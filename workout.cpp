@@ -1,9 +1,17 @@
 #include "workout.h"
 #include <QJsonArray>
+#include <sstream>
+#include <chrono>
+#include <iomanip>
+#include <string>
 
-Workout::Workout(const std::initializer_list<Exercise> &list):
-    m_exerlist{list.size()},
-    m_finish_timestamp{}
+constexpr char TIMESTAMP_RW_FORMAT_STRING[] = "%Y %m %d %H %M %S";
+
+Workout::Workout(const std::initializer_list<Exercise> &list,
+                 Timestamp now):
+    m_exerlist{},
+    m_finish_timestamp{now}
+    //m_loaded{list.size() > 0}
 {
     for (const Exercise &list_el: list)
         m_exerlist.push_back(list_el);
@@ -11,7 +19,9 @@ Workout::Workout(const std::initializer_list<Exercise> &list):
 
 void Workout::insert_exercise(const Exercise &exer, unsigned int dest_pos) 
 {
+    //m_loaded = true;
     if (m_exerlist.empty()) {
+        // Skip iterator calculations
         m_exerlist.push_back(exer);
         return;
     }
@@ -35,28 +45,32 @@ bool Workout::readJson(const QJsonObject &obj)
     using namespace std::chrono;
     // Read timestamp
     if (obj.contains("timestamp")) {
-        // TODO: consider using alternative to double (string?)
-        long rawstamp = static_cast<long>(obj.value("timestamp").toDouble());
-        duration<long> time_since_epoch{rawstamp};
-        m_finish_timestamp = Timestamp{time_since_epoch};
+        std::string time_string = obj.value("timestamp").toString().toStdString();
+        std::istringstream time_stream{time_string};
+        std::tm t{};
+        time_stream >> std::get_time(&t, TIMESTAMP_RW_FORMAT_STRING);
+        m_finish_timestamp = std::chrono::system_clock::from_time_t(std::mktime(&t));
     }
 
     if (obj.contains("exercises")) {
         QJsonArray exer_array = obj.value("exercises").toArray();
-        Exercise tmp;
         for (auto it = exer_array.begin(); it != exer_array.end(); ++it) {
+            Exercise tmp;
             tmp.readJson(it->toObject());
             m_exerlist.push_back(tmp);
         }
     }
 
+    //m_loaded = true;
     return true;
 }
 
 void Workout::writeJson(QJsonObject &obj) const
 {
-    long rawstamp = m_finish_timestamp.time_since_epoch().count();
-    obj.insert("timestamp", static_cast<double>(rawstamp));
+    std::ostringstream time_str;
+    std::time_t tst = std::chrono::system_clock::to_time_t(m_finish_timestamp);
+    time_str << std::put_time(std::localtime(&tst), TIMESTAMP_RW_FORMAT_STRING);
+    obj.insert("timestamp", time_str.str().c_str());
 
     QJsonArray ex_array;
     for (const auto& ex: m_exerlist) {

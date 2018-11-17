@@ -34,11 +34,11 @@ bool Exercise::readJson(const QJsonObject &obj)
     if (!obj.contains("sets_list"))
         return false;
 
-    QJsonArray set_arr{obj.value("sets_list")};
+    QJsonArray set_arr = obj.find("sets_list")->toArray();
     for (auto it = set_arr.begin(); it != set_arr.end(); ++it) {
         SetStorage set;
         set.readJson(it->toObject());
-        m_setlist.emplace_back(std::move(set));
+        m_setlist.push_back(set);
     }
     return true;
 }

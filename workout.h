@@ -10,13 +10,22 @@
 
 typedef std::chrono::time_point<std::chrono::system_clock> Timestamp;
 
+// TODO: lazy loading
+
 class Workout : public Jsonable
 {
 public:
-    Workout() = default;
+    explicit Workout(Timestamp now = std::chrono::system_clock::now()):
+        m_exerlist{},
+        m_finish_timestamp{now}
+       // m_loaded{false}
+    {
+    }
+
     virtual ~Workout() noexcept = default;
 
-    Workout(const std::initializer_list<Exercise> &);
+    Workout(const std::initializer_list<Exercise> &,
+            Timestamp now = std::chrono::system_clock::now());
 
     virtual bool readJson(const QJsonObject &);
     virtual void writeJson(QJsonObject &) const;
@@ -29,6 +38,7 @@ public:
     void mark_complete(Timestamp when = std::chrono::system_clock::now())
     {
         m_finish_timestamp = when;
+       // m_loaded = true;
     }
 
     std::size_t size() const
@@ -48,9 +58,17 @@ public:
 
     void insert_exercise(const Exercise &, unsigned int dest_pos);
     void delete_exercise(unsigned int dest_pos);
+
+    bool is_populated()
+    {
+        return true;
+       // return m_loaded;
+    }
 protected:
     std::vector<Exercise> m_exerlist;
     Timestamp m_finish_timestamp;
+    // TODO: lazy loading
+    // bool m_loaded;                     // field for lazy load
 };
 
 #endif // WORKOUT_H

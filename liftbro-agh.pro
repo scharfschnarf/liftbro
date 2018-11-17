@@ -17,7 +17,9 @@ SOURCES += \
     setstorage.cpp \
     exercise.cpp \
     workout.cpp \
-    exercisespawner.cpp
+    exercisespawner.cpp \
+    interface/interfacemaster.cpp \
+    workouttree.cpp
 
 RESOURCES += qml.qrc
 
@@ -38,4 +40,5 @@ HEADERS += \
     exercise.h \
     workout.h \
     exercisespawner.h \
-    spawnerfields.h
+    spawnerfields.h \
+    workouttree.h
