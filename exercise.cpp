@@ -40,6 +40,13 @@ bool Exercise::readJson(const QJsonObject &obj)
         set.readJson(it->toObject());
         m_setlist.push_back(set);
     }
+
+    if (obj.contains("name")) {
+        QString name = obj.find("name")->toString();
+        m_name = name.toStdString();
+    } else
+        m_name = "";
+
     return true;
 }
 
@@ -51,6 +58,9 @@ void Exercise::writeJson(QJsonObject &target) const
         set.writeJson(set_obj);
         set_arr.push_back(set_obj);
     }
+
+    if (!m_name.empty())
+        target.insert("name", m_name.c_str());
 
     target.insert("sets_list", set_arr);
 }

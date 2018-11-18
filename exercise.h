@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <initializer_list>
+#include <string>
 #include "setstorage.h"
 #include "jsonable.h"
 
@@ -27,6 +28,13 @@ public:
         return m_setlist.at(which - 1);
     }
 
+    // Auxiliary function that prevents copy creation when single field from single member
+    // needs to be extracted
+    SetStorage::FieldType get_field(unsigned int which, SetStorage::Member member) const
+    {
+        return m_setlist.at(which - 1).get_field(member);
+    }
+
     SetStorage &operator[] (unsigned int which)
     {
         return m_setlist[which - 1];
@@ -39,8 +47,19 @@ public:
 
     void insert_set(const SetStorage &, std::size_t dest_position);
     void delete_set(std::size_t dest_set);
+
+    std::string get_name() const
+    {
+        return m_name;
+    }
+
+    void set_name(const std::string &new_name)
+    {
+        m_name = new_name;
+    }
 protected:
     std::vector<SetStorage> m_setlist;
+    std::string m_name;
 };
 
 #endif // EXERCISE_H

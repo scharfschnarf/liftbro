@@ -1,5 +1,7 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
+#include <QQuickView>
+#include <QQmlContext>
 #include <QJsonDocument>
 #include <QJsonArray>
 #include <QFile>
@@ -8,17 +10,51 @@
 #include "workout.h"
 #include "workouttree.h"
 #include "exercisespawner.h"
+#include "control_plane/workoutlist.h"
 #include <iostream>
 #include <string>
-#include <iomanip>
-#include <ctime>
-#include <vector>
+#include <memory>
 
 using std::cout;
 using std::endl;
 
-int main(int, char * [])
+int main(int argc, char *argv[])
 {
+    QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+
+    QGuiApplication app(argc, argv);
+
+    QQuickView view;
+    view.setResizeMode(QQuickView::SizeRootObjectToView);
+    auto workout_tree_ptr = std::make_shared<WorkoutTree>();
+    workout_tree_ptr->readFile();
+    Workout w{
+        Exercise {
+            SetStorage{{SetStorage::reps, 3}, {SetStorage::weight, 40}, {SetStorage::warmup_bit, true}},
+            SetStorage{{SetStorage::reps, 5}, {SetStorage::weight, 60}, {SetStorage::warmup_bit, false}}
+        },
+        Exercise {
+            SetStorage{{SetStorage::reps, 4}, {SetStorage::warmup_bit, true}},
+            SetStorage{{SetStorage::reps, 10}, {SetStorage::warmup_bit, false}},
+            SetStorage{{SetStorage::reps, 20}, {SetStorage::warmup_bit, false}}
+        }
+    };
+    workout_tree_ptr->addWorkout(w);
+
+    for (auto it = workout_tree_ptr->begin(); it != workout_tree_ptr->end(); ++it)
+        std::cout << "Timestamp of workout: " << it->get_finish_time().toString("yyyy-M-d H:m:s").toStdString() << std::endl;
+
+    WorkoutList wl{&view, workout_tree_ptr};
+
+    QQmlContext *ctxt = view.rootContext();
+    ctxt->setContextProperty("workoutListModel", &wl);
+    view.setSource(QUrl(QStringLiteral("qrc:/WorkoutList.qml")));
+    view.show();
+
+    return app.exec();
+
+
+#ifdef WORKOUT_TREE_TEST
     WorkoutTree workouts;
     workouts.readFile();
 
@@ -60,7 +96,7 @@ int main(int, char * [])
     }
 
     workouts.writeFile();
-
+#endif
 #ifdef TEST_EXERCISE_SPAWNER
     Exercise e{
         SetStorage{{SetStorage::reps, 3}, {SetStorage::weight, 40}, {SetStorage::warmup_bit, true}},
@@ -165,18 +201,5 @@ int main(int, char * [])
             }
         }
     }*/
-
-    /*
-    QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
-
-    QGuiApplication app(argc, argv);
-
-    QQmlApplicationEngine engine;
-    engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
-    if (engine.rootObjects().isEmpty())
-        return -1;
-
-    return app.exec();
-    */
 #endif
 }

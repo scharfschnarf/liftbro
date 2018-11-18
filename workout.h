@@ -57,8 +57,8 @@ public:
         return m_exerlist[which - 1];
     }
 
-    void insert_exercise(const Exercise &, unsigned int dest_pos);
-    void delete_exercise(unsigned int dest_pos);
+    void insert_exercise(const Exercise &, std::size_t dest_pos);
+    void delete_exercise(std::size_t dest_pos);
 
     bool is_populated()
     {

@@ -1,4 +1,4 @@
-QT += quick
+QT += quick core
 CONFIG += c++14
 
 # The following define makes your compiler emit warnings if you use
@@ -18,8 +18,9 @@ SOURCES += \
     exercise.cpp \
     workout.cpp \
     exercisespawner.cpp \
-    interface/interfacemaster.cpp \
-    workouttree.cpp
+    workouttree.cpp \
+    control_plane/workoutlist.cpp \
+    control_plane/workoutdisplaycontroller.cpp
 
 RESOURCES += qml.qrc
 
@@ -41,4 +42,6 @@ HEADERS += \
     workout.h \
     exercisespawner.h \
     spawnerfields.h \
-    workouttree.h
+    workouttree.h \
+    control_plane/workoutlist.h \
+    control_plane/workoutdisplaycontroller.h
