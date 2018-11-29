@@ -2,7 +2,8 @@
 #include <algorithm>
 #include <QJsonArray>
 
-Exercise::Exercise(const std::initializer_list<SetStorage> &list)
+Exercise::Exercise(const std::string &name, const std::initializer_list<SetStorage> &list):
+    m_name{name}
 {
     std::copy(list.begin(), list.end(), std::back_inserter(m_setlist));
 }

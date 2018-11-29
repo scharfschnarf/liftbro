@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/">
         <file>WorkoutList.qml</file>
+        <file>SingleWorkout.qml</file>
     </qresource>
 </RCC>

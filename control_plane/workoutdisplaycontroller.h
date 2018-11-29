@@ -16,6 +16,7 @@ public:
         Weight,
         Time,
         Distance,
+        Name,
         INVALID_ROLE
     };
     explicit WorkoutDisplayController(QObject *parent = nullptr,
@@ -45,8 +46,30 @@ public:
     Q_INVOKABLE void appendSet(const QModelIndex &index);
     Q_INVOKABLE void deleteSet(const QModelIndex &index);
 
+    inline QHash<int, QByteArray> roleNames() const override;
 
-    QHash<int, QByteArray> roleNames() const override;
+    // Simplified bindings for QML workaround
+    // TODO: remove workaround
+    Q_INVOKABLE QVariant getParam(const QByteArray &what, int exercise, int set = 0)
+    {
+        DisplayRoles role;
+        if (what == "name")
+            role = Name;
+        else if (what == "warmupFlag")
+            role = WarmupFlag;
+        else if (what == "reps")
+            role = Reps;
+        else if (what == "weight")
+            role = Weight;
+        else if (what == "distance")
+            role = Distance;
+        else if (what == "time")
+            role = Time;
+        else
+            return QVariant{};
+
+        return data(index(exercise, set), role);
+    }
 private:
     inline SetStorage::Member toSetStorage(DisplayRoles) const;
     inline DisplayRoles toDisplayRole(SetStorage::Member) const;
@@ -90,6 +113,18 @@ WorkoutDisplayController::DisplayRoles WorkoutDisplayController::toDisplayRole(S
     default:
         return INVALID_ROLE;
     }
+}
+
+QHash<int, QByteArray> WorkoutDisplayController::roleNames() const
+{
+    QHash<int, QByteArray> roles;
+    roles[WarmupFlag] = "warmupFlag";
+    roles[Reps] = "reps";
+    roles[Weight] = "weight";
+    roles[Distance] = "distance";
+    roles[Time] = "time";
+    roles[Name] = "name";
+    return roles;
 }
 
 #endif // WORKOUTDISPLAYCONTROLLER_H

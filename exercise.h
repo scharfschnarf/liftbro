@@ -10,7 +10,7 @@
 class Exercise : public Jsonable
 {
 public:
-    Exercise(const std::initializer_list<SetStorage> &);
+    Exercise(const std::string &name, const std::initializer_list<SetStorage> &);
 
     // Explicitly default The Big Six
     Exercise()                            = default;

@@ -102,8 +102,7 @@ bool WorkoutTree::writeFile()
     QJsonObject docObj;
     docObj.insert("workoutArray", workoutArray);
 
-    QJsonDocument doc;
-    doc.setObject(docObj);
+    QJsonDocument doc{docObj};
 
     if (m_stor_file.isOpen())
         m_stor_file.close();
@@ -113,7 +112,7 @@ bool WorkoutTree::writeFile()
     if (!state)
         return false;
 
-    state = m_stor_file.write(doc.toJson());
+    state = m_stor_file.write(doc.toJson(QJsonDocument::Compact));
     if (!state)
         return false;
 

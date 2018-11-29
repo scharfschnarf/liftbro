@@ -10,6 +10,7 @@
 #include "workout.h"
 #include "workouttree.h"
 #include "exercisespawner.h"
+#include "control_plane/workoutdisplaycontroller.h"
 #include "control_plane/workoutlist.h"
 #include <iostream>
 #include <string>
@@ -30,13 +31,25 @@ int main(int argc, char *argv[])
     workout_tree_ptr->readFile();
     Workout w{
         Exercise {
-            SetStorage{{SetStorage::reps, 3}, {SetStorage::weight, 40}, {SetStorage::warmup_bit, true}},
-            SetStorage{{SetStorage::reps, 5}, {SetStorage::weight, 60}, {SetStorage::warmup_bit, false}}
+            "Squats",
+            {
+                SetStorage{{SetStorage::reps, 10}, {SetStorage::weight, 20}, {SetStorage::warmup_bit, true}},
+                SetStorage{{SetStorage::reps, 5}, {SetStorage::weight, 40}, {SetStorage::warmup_bit, true}},
+                SetStorage{{SetStorage::reps, 5}, {SetStorage::weight, 60}, {SetStorage::warmup_bit, true}},
+                SetStorage{{SetStorage::reps, 5}, {SetStorage::weight, 80}, {SetStorage::warmup_bit, false}},
+                SetStorage{{SetStorage::reps, 5}, {SetStorage::weight, 80}, {SetStorage::warmup_bit, false}},
+                SetStorage{{SetStorage::reps, 5}, {SetStorage::weight, 80}, {SetStorage::warmup_bit, false}},
+                SetStorage{{SetStorage::reps, 4}, {SetStorage::weight, 80}, {SetStorage::warmup_bit, false}},
+                SetStorage{{SetStorage::reps, 5}, {SetStorage::weight, 80}, {SetStorage::warmup_bit, false}}
+            }
         },
         Exercise {
-            SetStorage{{SetStorage::reps, 4}, {SetStorage::warmup_bit, true}},
-            SetStorage{{SetStorage::reps, 10}, {SetStorage::warmup_bit, false}},
-            SetStorage{{SetStorage::reps, 20}, {SetStorage::warmup_bit, false}}
+            "Pull ups",
+            {
+                SetStorage{{SetStorage::reps, 4}, {SetStorage::warmup_bit, true}},
+                SetStorage{{SetStorage::reps, 10}, {SetStorage::warmup_bit, false}},
+                SetStorage{{SetStorage::reps, 20}, {SetStorage::warmup_bit, false}}
+            }
         }
     };
     workout_tree_ptr->addWorkout(w);
@@ -44,11 +57,17 @@ int main(int argc, char *argv[])
     for (auto it = workout_tree_ptr->begin(); it != workout_tree_ptr->end(); ++it)
         std::cout << "Timestamp of workout: " << it->get_finish_time().toString("yyyy-M-d H:m:s").toStdString() << std::endl;
 
-    WorkoutList wl{&view, workout_tree_ptr};
+    auto *ptr = &(*(workout_tree_ptr->begin()));
+    std::cout << "First workout has " << ptr->size() << "exercises, names:" << std::endl;
+    for (unsigned i= 1; i <= ptr->size(); ++i ) {
+        std::cout << '\t' << ptr->get_exercise(i).get_name();
+    }
+    std::cout << std::endl;
+    WorkoutDisplayController wdc{&view, &(*(workout_tree_ptr->begin()))};
 
     QQmlContext *ctxt = view.rootContext();
-    ctxt->setContextProperty("workoutListModel", &wl);
-    view.setSource(QUrl(QStringLiteral("qrc:/WorkoutList.qml")));
+    ctxt->setContextProperty("singleWorkoutModel", &wdc);
+    view.setSource(QUrl(QStringLiteral("qrc:/SingleWorkout.qml")));
     view.show();
 
     return app.exec();

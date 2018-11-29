@@ -13,7 +13,7 @@ Workout::Workout(const std::initializer_list<Exercise> &list,
         m_exerlist.push_back(list_el);
 }
 
-void Workout::insert_exercise(const Exercise &exer, unsigned int dest_pos) 
+void Workout::insert_exercise(const Exercise &exer, std::size_t dest_pos)
 {
     //m_loaded = true;
     if (m_exerlist.empty()) {
@@ -28,7 +28,7 @@ void Workout::insert_exercise(const Exercise &exer, unsigned int dest_pos)
     m_exerlist.insert(it_before, exer);
 }
 
-void Workout::delete_exercise(unsigned int dest_pos)
+void Workout::delete_exercise(std::size_t dest_pos)
 {
     m_exerlist.erase(m_exerlist.begin() + dest_pos);
 }

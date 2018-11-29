@@ -45,8 +45,8 @@ QModelIndex WorkoutDisplayController::parent(const QModelIndex &) const
 
 int WorkoutDisplayController::rowCount(const QModelIndex &parent) const
 {
-    if (!parent.isValid())
-        return 0;
+    //if (!parent.isValid())
+    //    return 0;
 
     return static_cast<int>(m_workout_ptr->size());
 }
@@ -67,6 +67,9 @@ QVariant WorkoutDisplayController::data(const QModelIndex &index, int role) cons
 
     auto exer_copy = m_workout_ptr->get_exercise(static_cast<unsigned>(index.row()) + 1);
     unsigned set_id = static_cast<unsigned>(index.column() + 1);
+
+    if (role == Name)
+        return QString{exer_copy.get_name().c_str()};
 
     SetStorage::Member r = toSetStorage(static_cast<DisplayRoles>(role));
     if (role != SetStorage::MEMBERS_END)
@@ -95,7 +98,7 @@ void WorkoutDisplayController::appendExercise()
 void WorkoutDisplayController::deleteExercise(const QModelIndex &which)
 {
     if ((which.row() >= 0) && (which.row() < static_cast<int>(m_workout_ptr->size()))) {
-        beginRemoveRows(QModelIndex{},
+        beginRemoveRows(which.parent(),
                         static_cast<int>(which.row()), static_cast<int>(which.row() + 1));
         m_workout_ptr->delete_exercise(static_cast<std::size_t>(which.row() + 1));
         endRemoveRows();
@@ -134,7 +137,21 @@ void WorkoutDisplayController::appendSet(const QModelIndex &index)
     auto e_id = static_cast<unsigned>(index.row() + 1);
     auto s_id = static_cast<std::size_t>(index.column() + 1);
 
+    beginInsertColumns(index.parent(), s_id - 1, s_id);
     SetStorage set;
     m_workout_ptr->get_exercise(e_id).insert_set(set, s_id);
-    dataChanged(index, index);
+    endInsertColumns();
 }
+
+void WorkoutDisplayController::deleteSet(const QModelIndex &index)
+{
+    if (!index.isValid())
+        return;
+
+    auto e_id = static_cast<unsigned>(index.row() + 1);
+    auto s_id = static_cast<std::size_t>(index.column() + 1);
+    beginRemoveColumns(index.parent(), s_id - 1, s_id);
+    m_workout_ptr->get_exercise(e_id).delete_set(s_id);
+    endRemoveColumns();
+}
+
