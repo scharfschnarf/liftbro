@@ -22,7 +22,7 @@ void Workout::insert_exercise(const Exercise &exer, std::size_t dest_pos)
         return;
     }
 
-    auto it_before = m_exerlist.begin() + dest_pos - 1;
+    auto it_before = m_exerlist.begin() + dest_pos;
     if ((it_before > m_exerlist.end()) || (it_before < m_exerlist.begin()))
         throw -1;
     m_exerlist.insert(it_before, exer);

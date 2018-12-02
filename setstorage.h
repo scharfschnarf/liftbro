@@ -56,6 +56,12 @@ public:
         return (m_data.count(which) > 0);
     }
 
+    void remove_field(Member which)
+    {
+        auto it = m_data.find(which);
+        m_data.erase(it);
+    }
+
     virtual bool readJson(const QJsonObject &read_from);
     virtual void writeJson(QJsonObject &write_to) const;
 protected:

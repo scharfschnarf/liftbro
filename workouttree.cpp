@@ -15,6 +15,11 @@ struct PtrWorkoutLess
     }
 };
 
+WorkoutTree::~WorkoutTree() noexcept
+{
+    writeFile();
+}
+
 Workout & WorkoutTree::iterator::operator* ()
 {
     // Ensure load_obj has been executed

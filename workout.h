@@ -49,12 +49,12 @@ public:
 
     Exercise get_exercise(unsigned int which) const
     {
-        return m_exerlist.at(which - 1);
+        return m_exerlist.at(which);
     }
 
     Exercise &operator[] (unsigned int which)
     {
-        return m_exerlist[which - 1];
+        return m_exerlist[which];
     }
 
     void insert_exercise(const Exercise &, std::size_t dest_pos);

@@ -1,8 +1,14 @@
 import QtQuick 2.9
 import QtQuick.Controls 2.2
-
+import WDCData 1.0
+//import "FlatButton.qml"
 
 ListView {
+    function logValue(text, value) {
+        console.log(text, " = ", value);
+        return value
+    }
+
     id: listView
     width: 600
     height: 600
@@ -27,47 +33,38 @@ ListView {
     }
 */
 
-    model: singleWorkoutModel.rowCount()
+    model: logValue("rowCount for model", singleWorkoutModel.rowCount())
     delegate: Column {
-        property int row: index
+        property int row: logValue("index passed as row", index)
         spacing: 8
         ItemDelegate {
-            text: singleWorkoutModel.getParam("name", row)
+            text: logValue("name passed in item delegate", singleWorkoutModel.getParam(WDC.Name, row))
             highlighted: true
             display: AbstractButton.TextOnly
         }
         Row {
-            spacing: 1
+            spacing: 8
             Repeater {
+                // SET DELEGATE
                 model: singleWorkoutModel.columnCount(singleWorkoutModel.index(row, 0))
-                ItemDelegate {
-                    property int series: index
-                    text: qsTr("%1 reps").arg(singleWorkoutModel.getParam("reps", row, series))
+                SetButtons {
+                    property int series: logValue("index passed as series", index)
+                    property int reps:   singleWorkoutModel.getParam(WDC.Reps, row, series)
+                    property int weight: singleWorkoutModel.getParam(WDC.Weight, row, series)
+
+                    buttonColor: "#c72121"
+                    textTop: reps
+                    hasBottom: (weight > -1);
+                    textBottom: weight + " kg"
+
+                    onClickTop:    singleWorkoutModel.setParam(++reps,   WDC.Reps,   row, series)
+                    onClickBottom: singleWorkoutModel.setParam(++weight, WDC.Weight, row, series)
+                    onClickHoldTop:    singleWorkoutModel.setParam(reps   = -1, WDC.Reps,   row, series)
+                    onClickHoldBottom: singleWorkoutModel.setParam(weight = 0,  WDC.Weight, row, series)
                 }
             }
         }
     }
-
-        /*Column {
-        id: delegate
-        property int row: index
-        Row {
-            spacing: 1
-            Repeater {
-                model: 5
-                ItemDelegate {
-                    property int column: index
-                    text: qsTr("%1x%2").arg(delegate.row).arg(column)
-                    width: listView.headerItem.itemAt(column).width
-                }
-            }
-        }
-        Rectangle {
-            color: "silver"
-            width: parent.width
-            height: 1
-        }
-    }*/
 
     ScrollIndicator.horizontal: ScrollIndicator { }
     ScrollIndicator.vertical: ScrollIndicator { }

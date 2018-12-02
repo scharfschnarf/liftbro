@@ -58,6 +58,8 @@ public:
     WorkoutTree &operator= (const WorkoutTree &) = delete;
 
     explicit WorkoutTree(const char fileName[] = FILE_SAVE_PATH);
+    virtual ~WorkoutTree() noexcept;
+
     bool readFile();
     bool writeFile();
 

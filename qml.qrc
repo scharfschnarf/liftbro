@@ -2,5 +2,7 @@
     <qresource prefix="/">
         <file>WorkoutList.qml</file>
         <file>SingleWorkout.qml</file>
+        <file>FlatButton.qml</file>
+        <file>SetButtons.qml</file>
     </qresource>
 </RCC>

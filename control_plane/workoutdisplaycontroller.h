@@ -3,6 +3,7 @@
 
 #include <QAbstractItemModel>
 #include <QHash>
+#include <QQmlEngine>
 #include "workout.h"
 #include "setstorage.h"
 
@@ -19,9 +20,32 @@ public:
         Name,
         INVALID_ROLE
     };
+    Q_ENUM(DisplayRoles)
+
     explicit WorkoutDisplayController(QObject *parent = nullptr,
                                       Workout *workout_ptr = nullptr);
 
+    static void declareQML() {
+        qmlRegisterType<WorkoutDisplayController>("WDCData", 1, 0, "WDC");
+    }
+
+    // Add/delete/reorder exercises
+    // TODO: templated exercise add
+    Q_INVOKABLE void appendExercise();
+    Q_INVOKABLE void deleteExercise(const QModelIndex &index);
+    //TODO: Q_INVOKABLE void moveExercise(const QModelIndex &from, unsigned to);
+    // Add/remove sets to exercise
+    Q_INVOKABLE void appendSet(const QModelIndex &index);
+    Q_INVOKABLE void deleteSet(const QModelIndex &index);
+
+    // Simplified bindings for QML workaround
+    // TODO: remove workaround
+    //Q_INVOKABLE QVariant getParam(const QByteArray &what, int exercise, int set = 0);
+    Q_INVOKABLE QVariant getParam(DisplayRoles role, int exercise, int set = 0) const;
+    Q_INVOKABLE void setParam(const QVariant &newValue, DisplayRoles role, int exercise, int set = 0);
+protected:
+    // QT Model interface
+    // There's no need to expose it anymore
     // Header:
     QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const override;
 
@@ -37,39 +61,6 @@ public:
     Qt::ItemFlags flags(const QModelIndex &index) const override;
 
     bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole) override;
-    // Add/delete/reorder exercises
-    // TODO: templated exercise add
-    Q_INVOKABLE void appendExercise();
-    Q_INVOKABLE void deleteExercise(const QModelIndex &index);
-    //TODO: Q_INVOKABLE void moveExercise(const QModelIndex &from, unsigned to);
-    // Add/remove sets to exercise
-    Q_INVOKABLE void appendSet(const QModelIndex &index);
-    Q_INVOKABLE void deleteSet(const QModelIndex &index);
-
-    inline QHash<int, QByteArray> roleNames() const override;
-
-    // Simplified bindings for QML workaround
-    // TODO: remove workaround
-    Q_INVOKABLE QVariant getParam(const QByteArray &what, int exercise, int set = 0)
-    {
-        DisplayRoles role;
-        if (what == "name")
-            role = Name;
-        else if (what == "warmupFlag")
-            role = WarmupFlag;
-        else if (what == "reps")
-            role = Reps;
-        else if (what == "weight")
-            role = Weight;
-        else if (what == "distance")
-            role = Distance;
-        else if (what == "time")
-            role = Time;
-        else
-            return QVariant{};
-
-        return data(index(exercise, set), role);
-    }
 private:
     inline SetStorage::Member toSetStorage(DisplayRoles) const;
     inline DisplayRoles toDisplayRole(SetStorage::Member) const;
@@ -113,18 +104,6 @@ WorkoutDisplayController::DisplayRoles WorkoutDisplayController::toDisplayRole(S
     default:
         return INVALID_ROLE;
     }
-}
-
-QHash<int, QByteArray> WorkoutDisplayController::roleNames() const
-{
-    QHash<int, QByteArray> roles;
-    roles[WarmupFlag] = "warmupFlag";
-    roles[Reps] = "reps";
-    roles[Weight] = "weight";
-    roles[Distance] = "distance";
-    roles[Time] = "time";
-    roles[Name] = "name";
-    return roles;
 }
 
 #endif // WORKOUTDISPLAYCONTROLLER_H

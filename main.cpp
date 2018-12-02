@@ -24,6 +24,7 @@ int main(int argc, char *argv[])
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
     QGuiApplication app(argc, argv);
+    WorkoutDisplayController::declareQML();
 
     QQuickView view;
     view.setResizeMode(QQuickView::SizeRootObjectToView);
@@ -59,7 +60,7 @@ int main(int argc, char *argv[])
 
     auto *ptr = &(*(workout_tree_ptr->begin()));
     std::cout << "First workout has " << ptr->size() << "exercises, names:" << std::endl;
-    for (unsigned i= 1; i <= ptr->size(); ++i ) {
+    for (unsigned i= 0; i < ptr->size(); ++i ) {
         std::cout << '\t' << ptr->get_exercise(i).get_name();
     }
     std::cout << std::endl;

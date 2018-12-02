@@ -15,7 +15,7 @@ void Exercise::insert_set(const SetStorage &new_set, std::size_t dest_pos)
         return;
     }
 
-    auto it_before = m_setlist.begin() + (dest_pos - 1);
+    auto it_before = m_setlist.begin() + dest_pos;
     if ((it_before > m_setlist.end()) || (it_before < m_setlist.begin()))
         throw 'a';
 
@@ -27,7 +27,7 @@ void Exercise::delete_set(std::size_t dest_set)
     if (dest_set > size())
         return;
 
-    m_setlist.erase(m_setlist.begin() + dest_set - 1);
+    m_setlist.erase(m_setlist.begin() + dest_set);
 }
 
 bool Exercise::readJson(const QJsonObject &obj)
