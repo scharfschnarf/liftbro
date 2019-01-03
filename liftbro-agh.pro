@@ -17,7 +17,6 @@ SOURCES += \
     setstorage.cpp \
     exercise.cpp \
     workout.cpp \
-    exercisespawner.cpp \
     workouttree.cpp \
     control_plane/workoutlist.cpp \
     control_plane/workoutdisplaycontroller.cpp
@@ -40,8 +39,8 @@ HEADERS += \
     setstorage.h \
     exercise.h \
     workout.h \
-    exercisespawner.h \
     spawnerfields.h \
     workouttree.h \
     control_plane/workoutlist.h \
-    control_plane/workoutdisplaycontroller.h
+    control_plane/workoutdisplaycontroller.h \
+    filetree.h

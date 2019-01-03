@@ -36,7 +36,7 @@ public:
     //TODO: Q_INVOKABLE void moveExercise(const QModelIndex &from, unsigned to);
     // Add/remove sets to exercise
     Q_INVOKABLE void appendSet(const QModelIndex &index);
-    Q_INVOKABLE void deleteSet(const QModelIndex &index);
+    Q_INVOKABLE void deleteSet(int row, int column);
 
     // Simplified bindings for QML workaround
     // TODO: remove workaround

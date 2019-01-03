@@ -4,5 +4,6 @@
         <file>SingleWorkout.qml</file>
         <file>FlatButton.qml</file>
         <file>SetButtons.qml</file>
+        <file>SingleSet.qml</file>
     </qresource>
 </RCC>

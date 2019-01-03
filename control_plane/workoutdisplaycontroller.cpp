@@ -29,13 +29,15 @@ QModelIndex WorkoutDisplayController::index(int row, int column, const QModelInd
     unsigned m_row = static_cast<unsigned>(row);
     unsigned m_col = static_cast<unsigned>(column);
 
+    std::cerr << "## in WDC::index(), row (exercise) " << m_row << ", column (set) " << m_col << std::endl;
+
     unsigned max_row = static_cast<unsigned>(m_workout_ptr->size());
     if (m_row < max_row) {
         unsigned max_col = static_cast<unsigned>((*m_workout_ptr)[m_row].size());
         if (m_col < max_col)
             return createIndex(row, column);
     }
-
+    std::cerr << "## in WDC::index(): INVALID INDEX" << std::endl;
     return QModelIndex{};
 }
 
@@ -214,15 +216,16 @@ void WorkoutDisplayController::appendSet(const QModelIndex &index)
     endInsertColumns();
 }
 
-void WorkoutDisplayController::deleteSet(const QModelIndex &index)
+void WorkoutDisplayController::deleteSet(int row, int set)
 {
-    if (!index.isValid())
+    auto ind = index(row, set);
+    if (!ind.isValid())
         return;
 
-    auto e_id = static_cast<unsigned>(index.row());
-    auto s_id = static_cast<std::size_t>(index.column());
-    beginRemoveColumns(index.parent(), s_id, s_id + 1);
-    m_workout_ptr->get_exercise(e_id).delete_set(s_id);
+    auto e_id = static_cast<unsigned>(ind.row());
+    auto s_id = static_cast<std::size_t>(ind.column());
+    beginRemoveColumns(ind.parent(), s_id, s_id + 1);
+    (*m_workout_ptr)[e_id].delete_set(s_id);
     endRemoveColumns();
 }
 

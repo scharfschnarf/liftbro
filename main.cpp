@@ -9,7 +9,6 @@
 
 #include "workout.h"
 #include "workouttree.h"
-#include "exercisespawner.h"
 #include "control_plane/workoutdisplaycontroller.h"
 #include "control_plane/workoutlist.h"
 #include <iostream>

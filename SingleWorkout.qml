@@ -44,24 +44,9 @@ ListView {
         }
         Row {
             spacing: 8
-            Repeater {
-                // SET DELEGATE
-                model: singleWorkoutModel.columnCount(singleWorkoutModel.index(row, 0))
-                SetButtons {
-                    property int series: logValue("index passed as series", index)
-                    property int reps:   singleWorkoutModel.getParam(WDC.Reps, row, series)
-                    property int weight: singleWorkoutModel.getParam(WDC.Weight, row, series)
-
-                    buttonColor: "#c72121"
-                    textTop: reps
-                    hasBottom: (weight > -1);
-                    textBottom: weight + " kg"
-
-                    onClickTop:    singleWorkoutModel.setParam(++reps,   WDC.Reps,   row, series)
-                    onClickBottom: singleWorkoutModel.setParam(++weight, WDC.Weight, row, series)
-                    onClickHoldTop:    singleWorkoutModel.setParam(reps   = -1, WDC.Reps,   row, series)
-                    onClickHoldBottom: singleWorkoutModel.setParam(weight = 0,  WDC.Weight, row, series)
-                }
+            SingleSet {
+                exercise:  row
+                //setsCount: logValue("number of sets passed as model: ", singleWorkoutModel.columnCount(singleWorkoutModel.index(row, 0)))
             }
         }
     }
