@@ -7,6 +7,11 @@
 #include "setstorage.h"
 #include "jsonable.h"
 
+struct ExerciseMetaFields
+{
+    bool goodWorkout;
+};
+
 class Exercise : public Jsonable
 {
 public:
@@ -23,24 +28,24 @@ public:
     virtual bool readJson(const QJsonObject &);
     virtual void writeJson(QJsonObject &) const;
 
-    SetStorage get_set(unsigned int which) const
+    SetStorage get_set(std::size_t which) const
     {
         return m_setlist.at(which);
     }
 
-    SetStorage &get_ref(unsigned int which)
+    SetStorage &get_ref(std::size_t which)
     {
         return m_setlist.at(which);
     }
 
     // Auxiliary functions that prevent copy creation when single field from single member
     // needs to be extracted
-    SetStorage::FieldType get_field(unsigned int which, SetStorage::Member member) const
+    SetStorage::FieldType get_field(std::size_t which, SetStorage::Member member) const
     {
         return m_setlist.at(which).get_field(member);
     }
 
-    void set_field(unsigned int which, SetStorage::Member member, unsigned int value)
+    void set_field(std::size_t which, SetStorage::Member member, SetStorage::FieldType value)
     {
         m_setlist.at(which).set_field(member, value);
     }
@@ -67,6 +72,8 @@ public:
     {
         m_name = new_name;
     }
+
+    ExerciseMetaFields generateEmf() const;
 protected:
     std::vector<SetStorage> m_setlist;
     std::string m_name;

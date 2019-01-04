@@ -17,6 +17,11 @@ public:
         Weight,
         Time,
         Distance,
+        PlannedReps,
+        PlannedWeight,
+        PlannedTime,
+        PlannedDistance,
+        END_OF_SETSTORAGE_ROLES,
         Name,
         INVALID_ROLE
     };
@@ -72,38 +77,17 @@ private:
 
 SetStorage::Member WorkoutDisplayController::toSetStorage(DisplayRoles role) const
 {
-    switch (role) {
-    case WarmupFlag:
-        return SetStorage::warmup_bit;
-    case Reps:
-        return SetStorage::reps;
-    case Weight:
-        return SetStorage::weight;
-    case Time:
-        return SetStorage::time;
-    case Distance:
-        return SetStorage::distance;
-    default:
-        return SetStorage::MEMBERS_END;
+    if ((role >= WarmupFlag) && (role < END_OF_SETSTORAGE_ROLES)) {
+        auto rawRole = static_cast<int>(role) - static_cast<int>(DisplayRoles::WarmupFlag);
+        return static_cast<SetStorage::Member>(rawRole);
     }
+    return SetStorage::MEMBERS_END;
 }
 
 WorkoutDisplayController::DisplayRoles WorkoutDisplayController::toDisplayRole(SetStorage::Member m) const
 {
-    switch(m) {
-    case SetStorage::warmup_bit:
-        return WarmupFlag;
-    case SetStorage::reps:
-        return Reps;
-    case SetStorage::weight:
-        return Weight;
-    case SetStorage::distance:
-        return Distance;
-    case SetStorage::time:
-        return Time;
-    default:
-        return INVALID_ROLE;
-    }
+    auto rawRole = static_cast<int>(m) + static_cast<int>(DisplayRoles::WarmupFlag);
+    return static_cast<DisplayRoles>(rawRole);
 }
 
 #endif // WORKOUTDISPLAYCONTROLLER_H

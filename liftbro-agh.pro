@@ -19,7 +19,11 @@ SOURCES += \
     workout.cpp \
     workouttree.cpp \
     control_plane/workoutlist.cpp \
-    control_plane/workoutdisplaycontroller.cpp
+    control_plane/workoutdisplaycontroller.cpp \
+    stencil/stenciltag.cpp \
+    stencil/stencilfactory.cpp \
+    stencil/exercisefactory.cpp \
+    stencil/tags_setstorage.cpp
 
 RESOURCES += qml.qrc
 
@@ -43,4 +47,10 @@ HEADERS += \
     workouttree.h \
     control_plane/workoutlist.h \
     control_plane/workoutdisplaycontroller.h \
-    filetree.h
+    filetree.h \
+    stencil/stenciltag.h \
+    stencil/stencilfactory.h \
+    stencil/exercisefactory.h \
+    stencil/tags_setstorage.h \
+    tools/ayt.h \
+    stencil/tags_common.h

@@ -118,6 +118,10 @@ QVariant WorkoutDisplayController::getParam(DisplayRoles role, int exercise, int
         case Weight:
         case Distance:
         case Time:
+        case PlannedReps:
+        case PlannedTime:
+        case PlannedWeight:
+        case PlannedDistance:
             return -1;
         default:
             return QVariant{};

@@ -11,7 +11,11 @@ constexpr static char SET_STORAGE_MEMBER_LABELS[][STORAGE_LABELS_LENGTH] = {
     "reps",
     "weight",
     "time",
-    "distance"
+    "distance",
+    "plan_reps",
+    "plan_weight",
+    "plan_time",
+    "plan_distance",
     ""
 };
 
@@ -32,7 +36,17 @@ class SetStorage : public Jsonable
 {
 public:
     enum Member {
-        warmup_bit, reps, weight, time, distance, MEMBERS_END
+        warmup_bit = 0,
+        good_set_bit,
+        reps,
+        weight,
+        time,
+        distance,
+        planned_reps,
+        planned_weight,
+        planned_time,
+        planned_distance,
+        MEMBERS_END
     };
 
     typedef long int FieldType;
