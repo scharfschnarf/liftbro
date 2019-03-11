@@ -1,7 +1,4 @@
-#include <QGuiApplication>
-#include <QQmlApplicationEngine>
-#include <QQuickView>
-#include <QQmlContext>
+#include <QApplication>
 #include <QJsonDocument>
 #include <QJsonArray>
 #include <QFile>
@@ -11,6 +8,7 @@
 #include "workouttree.h"
 #include "control_plane/workoutdisplaycontroller.h"
 #include "control_plane/workoutlist.h"
+#include "ui/mainwindow.h"
 #include <iostream>
 #include <string>
 #include <memory>
@@ -20,13 +18,16 @@ using std::endl;
 
 int main(int argc, char *argv[])
 {
-    QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+    QApplication app{argc, argv};
 
-    QGuiApplication app(argc, argv);
-    WorkoutDisplayController::declareQML();
+    MainWindow window;
+    window.show();
+    return app.exec();
+/*
 
-    QQuickView view;
-    view.setResizeMode(QQuickView::SizeRootObjectToView);
+
+    //QQuickView view;
+    //view.setResizeMode(QQuickView::SizeRootObjectToView);
     auto workout_tree_ptr = std::make_shared<WorkoutTree>();
     workout_tree_ptr->readFile();
     Workout w{
@@ -70,7 +71,7 @@ int main(int argc, char *argv[])
     view.setSource(QUrl(QStringLiteral("qrc:/SingleWorkout.qml")));
     view.show();
 
-    return app.exec();
+    return app.exec();*/
 
 
 #ifdef WORKOUT_TREE_TEST

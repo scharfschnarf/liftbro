@@ -3,9 +3,13 @@
 
 #include <QAbstractItemModel>
 #include <QHash>
-#include <QQmlEngine>
 #include "workout.h"
 #include "setstorage.h"
+
+#ifdef USING_QML
+#include <QQmlEngine>
+#endif
+
 
 class WorkoutDisplayController : public QAbstractItemModel
 {
@@ -30,9 +34,13 @@ public:
     explicit WorkoutDisplayController(QObject *parent = nullptr,
                                       Workout *workout_ptr = nullptr);
 
+
     static void declareQML() {
+#ifdef USING_QML
         qmlRegisterType<WorkoutDisplayController>("WDCData", 1, 0, "WDC");
+#endif
     }
+
 
     // Add/delete/reorder exercises
     // TODO: templated exercise add

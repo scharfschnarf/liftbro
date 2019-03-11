@@ -1,4 +1,4 @@
-QT += quick core
+QT += widgets core
 CONFIG += c++14
 
 # The following define makes your compiler emit warnings if you use
@@ -23,9 +23,8 @@ SOURCES += \
     stencil/stenciltag.cpp \
     stencil/stencilfactory.cpp \
     stencil/exercisefactory.cpp \
-    stencil/tags_setstorage.cpp
-
-RESOURCES += qml.qrc
+    stencil/tags_setstorage.cpp \
+    ui/mainwindow.cpp
 
 # Additional import path used to resolve QML modules in Qt Creator's code model
 QML_IMPORT_PATH =
@@ -53,4 +52,5 @@ HEADERS += \
     stencil/exercisefactory.h \
     stencil/tags_setstorage.h \
     tools/ayt.h \
-    stencil/tags_common.h
+    stencil/tags_common.h \
+    ui/mainwindow.h
