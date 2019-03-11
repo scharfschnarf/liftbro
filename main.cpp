@@ -16,20 +16,10 @@
 using std::cout;
 using std::endl;
 
-int main(int argc, char *argv[])
+typedef std::shared_ptr<WorkoutTree> WorkoutTreePtr;
+
+void addWorkout(WorkoutTreePtr treePtr)
 {
-    QApplication app{argc, argv};
-
-    MainWindow window;
-    window.show();
-    return app.exec();
-/*
-
-
-    //QQuickView view;
-    //view.setResizeMode(QQuickView::SizeRootObjectToView);
-    auto workout_tree_ptr = std::make_shared<WorkoutTree>();
-    workout_tree_ptr->readFile();
     Workout w{
         Exercise {
             "Squats",
@@ -53,10 +43,100 @@ int main(int argc, char *argv[])
             }
         }
     };
+    treePtr->addWorkout(w);
+}
+
+void printWorkouts(WorkoutTreePtr treePtr)
+{
+    for (auto it = treePtr->begin(); it != treePtr->end(); ++it)
+        std::cout << "Timestamp of workout: " << it->get_finish_time().toString("yyyy-M-d H:m:s").toStdString() << std::endl;
+}
+
+void printSingleWorkout(WorkoutTreePtr treePtr)
+{
+    WorkoutDisplayController wdc{nullptr, &(*(treePtr->begin()))};
+    for (int i = 0; i < wdc.rowCount(); ++i) {
+        std::cout << "\tExercise: "
+                  << wdc.getParam(WorkoutDisplayController::Name, i).toString().toStdString()
+                  << std::endl;
+        for (int set = 0; set < wdc.columnCount(wdc.index(i, 0)); ++set) {
+            QVariant reps   = wdc.getParam(WorkoutDisplayController::Reps,i,set);
+            QVariant weight = wdc.getParam(WorkoutDisplayController::Weight,i,set);
+
+            std::cout << "\t\tSet " << set + 1
+                      << ", repetitions: "
+                      << reps.toInt();
+            if (weight.toInt() != -1)
+                std::cout << ", weight: " << weight.toInt();
+            std::cout << std::endl;
+        }
+    }
+}
+
+void editSingleWorkout(WorkoutTreePtr treePtr)
+{
+    WorkoutDisplayController wdc{nullptr, &(*(treePtr->begin()))};
+    for (int i = 0; i < wdc.rowCount(); ++i) {
+        for (int set = 0; set < wdc.columnCount(wdc.index(i, 0)); ++set) {
+            int reps   = wdc.getParam(WorkoutDisplayController::Reps,i,set).toInt() + 1;
+            wdc.setParam(reps, WorkoutDisplayController::Reps,i,set);
+        }
+    }
+    std::cout << "Sets amended" << std::endl;
+}
+
+void appendSingleSet(WorkoutTreePtr treePtr)
+{
+    WorkoutDisplayController wdc{nullptr, &(*(treePtr->begin()))};
+    for (int i = 0; i < wdc.rowCount(); ++i) {
+        wdc.appendSet(wdc.index(i, 0));
+    }
+    printSingleWorkout(treePtr);
+}
+
+int main()
+{
+    auto workoutTree = std::make_shared<WorkoutTree>();
+    workoutTree->readFile();
+    while (true)
+    {
+        std::cout << "Possible operations: \n"
+                  << "0 - quit \n"
+                  << "1 - print list of workouts \n"
+                  << "2 - add new workout \n"
+                  << "3 - print first workout \n"
+                  << "4 - edit first workout \n"
+                  << "Your choice: ";
+        int choice;
+        std::cin >> choice;
+        switch (choice)
+        {
+        case 0:
+            return 0;
+        case 1:
+            printWorkouts(workoutTree);
+            break;
+        case 2:
+            addWorkout(workoutTree);
+            break;
+        case 3:
+            printSingleWorkout(workoutTree);
+            break;
+        case 4:
+            editSingleWorkout(workoutTree);
+            break;
+        }
+    }
+/*
+
+
+    //QQuickView view;
+    //view.setResizeMode(QQuickView::SizeRootObjectToView);
+
+
     workout_tree_ptr->addWorkout(w);
 
-    for (auto it = workout_tree_ptr->begin(); it != workout_tree_ptr->end(); ++it)
-        std::cout << "Timestamp of workout: " << it->get_finish_time().toString("yyyy-M-d H:m:s").toStdString() << std::endl;
+
 
     auto *ptr = &(*(workout_tree_ptr->begin()));
     std::cout << "First workout has " << ptr->size() << "exercises, names:" << std::endl;

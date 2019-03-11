@@ -75,7 +75,7 @@ void SetGoodBit::execute(SetStorage &s) const
             }
         }
     }
-    s.set_field(SetStorage::good_set_bit, goodBit);
+    //s.set_field(SetStorage::good_set_bit, goodBit);
 }
 
 bool SetGoodBit::readJson(const QJsonObject &)

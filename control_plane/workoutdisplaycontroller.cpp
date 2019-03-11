@@ -29,7 +29,7 @@ QModelIndex WorkoutDisplayController::index(int row, int column, const QModelInd
     unsigned m_row = static_cast<unsigned>(row);
     unsigned m_col = static_cast<unsigned>(column);
 
-    std::cerr << "## in WDC::index(), row (exercise) " << m_row << ", column (set) " << m_col << std::endl;
+    //std::cerr << "## in WDC::index(), row (exercise) " << m_row << ", column (set) " << m_col << std::endl;
 
     unsigned max_row = static_cast<unsigned>(m_workout_ptr->size());
     if (m_row < max_row) {
@@ -37,7 +37,7 @@ QModelIndex WorkoutDisplayController::index(int row, int column, const QModelInd
         if (m_col < max_col)
             return createIndex(row, column);
     }
-    std::cerr << "## in WDC::index(): INVALID INDEX" << std::endl;
+    //std::cerr << "## in WDC::index(): INVALID INDEX" << std::endl;
     return QModelIndex{};
 }
 
@@ -52,7 +52,7 @@ int WorkoutDisplayController::rowCount(const QModelIndex &parent) const
     //    return 0;
 
     auto rv = static_cast<int>(m_workout_ptr->size());
-    std::cerr << "in WDC rowCount, returning " << rv << std::endl;
+    //std::cerr << "in WDC rowCount, returning " << rv << std::endl;
     return rv;
 }
 
@@ -63,14 +63,14 @@ int WorkoutDisplayController::columnCount(const QModelIndex &parent) const
 
     unsigned exercise_id = static_cast<unsigned>(parent.row());
     auto rv = static_cast<int>((*m_workout_ptr)[exercise_id].size());
-    std::cerr << "in WDC columnCount, returning " << rv << std::endl;
+    //std::cerr << "in WDC columnCount, returning " << rv << std::endl;
     return rv;
 }
 
 QVariant WorkoutDisplayController::data(const QModelIndex &index, int role) const
 {
     if (!index.isValid()) {
-        std::cerr << "in WDC data, index (" << index.row() << "," << index.column() << ")invalid, ending!" << std::endl;
+        //std::cerr << "in WDC data, index (" << index.row() << "," << index.column() << ")invalid, ending!" << std::endl;
         return QVariant();
     }
 
@@ -97,13 +97,13 @@ QVariant WorkoutDisplayController::data(const QModelIndex &index, int role) cons
             return QVariant{};
     }
 
-    std::cerr << "in WDC data, role invalid, ending!" << std::endl;
+    //std::cerr << "in WDC data, role invalid, ending!" << std::endl;
     return QVariant();
 }
 
 QVariant WorkoutDisplayController::getParam(DisplayRoles role, int exercise, int set) const
 {
-    std::cerr << "### WDC getParam: displayRole = " << role << ", from exercise = " << exercise << ", set = " << set << std::endl;
+    //std::cerr << "### WDC getParam: displayRole = " << role << ", from exercise = " << exercise << ", set = " << set << std::endl;
     QVariant rv = data(index(exercise, set), role);
 
     // Two checks

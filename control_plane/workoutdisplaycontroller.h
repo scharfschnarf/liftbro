@@ -56,7 +56,7 @@ public:
     //Q_INVOKABLE QVariant getParam(const QByteArray &what, int exercise, int set = 0);
     Q_INVOKABLE QVariant getParam(DisplayRoles role, int exercise, int set = 0) const;
     Q_INVOKABLE void setParam(const QVariant &newValue, DisplayRoles role, int exercise, int set = 0);
-protected:
+//protected:
     // QT Model interface
     // There's no need to expose it anymore
     // Header:
@@ -85,11 +85,17 @@ private:
 
 SetStorage::Member WorkoutDisplayController::toSetStorage(DisplayRoles role) const
 {
-    if ((role >= WarmupFlag) && (role < END_OF_SETSTORAGE_ROLES)) {
-        auto rawRole = static_cast<int>(role) - static_cast<int>(DisplayRoles::WarmupFlag);
-        return static_cast<SetStorage::Member>(rawRole);
+    switch (role) {
+    case Reps:            return SetStorage::reps;
+    case Weight:          return SetStorage::weight;
+    case Time:            return SetStorage::time;
+    case Distance:        return SetStorage::distance;
+    case PlannedReps:     return SetStorage::planned_reps;
+    case PlannedWeight:   return SetStorage::planned_weight;
+    case PlannedTime:     return SetStorage::planned_time;
+    case PlannedDistance: return SetStorage::planned_distance;
+    default:              return SetStorage::MEMBERS_END;
     }
-    return SetStorage::MEMBERS_END;
 }
 
 WorkoutDisplayController::DisplayRoles WorkoutDisplayController::toDisplayRole(SetStorage::Member m) const

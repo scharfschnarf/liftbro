@@ -37,7 +37,7 @@ class SetStorage : public Jsonable
 public:
     enum Member {
         warmup_bit = 0,
-        good_set_bit,
+        //good_set_bit,
         reps,
         weight,
         time,
